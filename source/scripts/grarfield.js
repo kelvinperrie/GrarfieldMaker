@@ -28,7 +28,17 @@ $(document).ready(function() {
     $("#editor-link").on("click", function() {
         _builder.OpenForEditing();
     });
-
+    $("#flip-on-horizontal").on("click", function() {
+        _builder.FlipHorizontal();
+    });
+    $("#clear-all").on("click",function() {
+        if (confirm('Are you sure you want to delete your creation?')) {
+            _builder.ClearAll();
+        }
+    });
+    $("#cartoon-container").on("click", function() {
+        _builder.MakeSelected();
+    });
 });
 
 var builder = function() {
@@ -52,6 +62,7 @@ var builder = function() {
             $("#chunk-selector").show();    // hide avaiable chunks
             $("#selected-toolbar").show();  // hide editor tools
             $("#editor-link").hide();       // show link to editor
+            self.UpdateToolBarButtonEnablednesssss(); // update the toolbar buttons to be enabled/disabled
         }
 
         // based on query string params, do we need to load some objects into the 'comic'
@@ -128,15 +139,17 @@ var builder = function() {
         if(self.showEditor) {
             $("#" + id).draggable();
             // clicking a thing should select it
-            $("#" + id).on('click', function(){
+            $("#" + id).on('click', function(event){
                 self.MakeSelected($(this));
+                event.stopPropagation();
             });
             // text in speech bubbles should be editable on double click
             if($("#" + id).hasClass('speech-bubble')) {
-                $("#" + id).on('dblclick', function(){
+                $("#" + id).on('dblclick', function(event){
                     var currentText = $("#" + id).html();
                     var text = window.prompt('Say what:', currentText);
                     $("#" + id).html(text);
+                    event.stopPropagation();
                 });
             }
             
@@ -152,15 +165,25 @@ var builder = function() {
             }
         }
     }
+    self.UpdateToolBarButtonEnablednesssss = function() {
+        if($('.selected').length == 0) {
+            $(".requires-selection").addClass("disabled");
+        } else {
+            $(".requires-selection").removeClass("disabled");
+        }
+    }
     self.DeleteSelected = function() {
         $('.selected').remove();
+        self.UpdateToolBarButtonEnablednesssss();
     }
     self.MakeSelected = function(chunk) {
         self.ClearSelected();
         $(chunk).addClass('selected');
+        self.UpdateToolBarButtonEnablednesssss();
     }
     self.ClearSelected = function() {
         $("#cartoon-container .chunk").removeClass('selected');
+        self.UpdateToolBarButtonEnablednesssss();
     }
     self.MoveTowardsFront = function() {
         var currentZ = $('.selected').css("z-index");
@@ -172,21 +195,29 @@ var builder = function() {
         currentZ = parseInt(currentZ) - 10;
         $('.selected').css('z-index', currentZ);
     }
+    self.FlipHorizontal = function() {
+        var currentTransform = $('.selected').css("transform");
+        var newTransform = "matrix(-1, 0, 0, 1, 0, 0)";
+        if(currentTransform == newTransform) {
+            newTransform = "matrix(1, 0, 0, 1, 0, 0)";
+        }
+        $('.selected').css("transform", newTransform);
+    }
+    self.ClearAll = function() {
+        console.log("asdf");
+        $("#cartoon-container").html("");
+    }
 
     // setup the possible things that can be added to the comic
     self.availableChunks.push(new chunk("image", "Frame","frame1.png",{ width: 383, height: 329 },120));
     self.availableChunks.push(new chunk("image", "Bench","bench1.png",{ width: 380, height: 48 },110));
     self.availableChunks.push(new chunk("image", "Bkgrnd yellowish","background1.png",{ width: 383, height: 329 },100));
     self.availableChunks.push(new chunk("image", "Bkgrnd greenish","background2.png",{ width: 383, height: 329 },100));
-    self.availableChunks.push(new chunk("image", "Grarfield looking right","grarfield-right-upper.png",{ width: 110, height: 140 },150));
-    self.availableChunks.push(new chunk("image", "Grarfield looking left","grarfield-left-upper.png",{ width: 110, height: 140 },150));
-    self.availableChunks.push(new chunk("image", "Grarfield bed looking right","grarfield-bed-right.png",{ width: 209, height: 143 },150));
-    self.availableChunks.push(new chunk("image", "Grarfield bed looking left","grarfield-bed-left.png",{ width: 209, height: 143 },150));
-    self.availableChunks.push(new chunk("image", "Joan looking right","joan-right.png",{ width: 105, height: 201 },150));
-    self.availableChunks.push(new chunk("image", "Joan looking left","joan-left.png",{ width: 105, height: 201 },150));
+    self.availableChunks.push(new chunk("image", "Grarfield","grarfield-right-upper.png",{ width: 110, height: 140 },150));
+    self.availableChunks.push(new chunk("image", "Grarfield in bed","grarfield-bed-right.png",{ width: 209, height: 143 },150));
+    self.availableChunks.push(new chunk("image", "Joan man","joan-left.png",{ width: 105, height: 201 },150));
     self.availableChunks.push(new chunk("talking", "Talking bubble","Example text",{ width: 200, height: 200 },150));
-    self.availableChunks.push(new chunk("image", "Talk bubble spike left","speech-from-left.png",{ width: 25, height: 26 },150));
-    self.availableChunks.push(new chunk("image", "Talk bubble spike right","speech-from-right.png",{ width: 25, height: 26 },150));
+    self.availableChunks.push(new chunk("image", "Talk bubble spike","speech-from-left.png",{ width: 25, height: 26 },150));
 
 };
 

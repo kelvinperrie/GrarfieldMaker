@@ -2,7 +2,6 @@
 <html lang="en-nz">
 <head>
     <title>fat cat funny</title>
-    <link href="http://allfont.net/allfont.css?fonts=garfield" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="styles/grarfield.css">
     <style>
 
@@ -15,10 +14,12 @@
 
         </div>
         <div id="selected-toolbar">
-            <div id="move-forwards-button" class="toolbar-button">Move towards front</div>
-            <div id="move-backwards-button" class="toolbar-button">Move backwards</div>
-            <div id="clear-selection-button" class="toolbar-button">Select nothing</div>
-            <div id="delete-button" class="toolbar-button">Delete selected!</div>
+            <div id="move-forwards-button" class="toolbar-button requires-selection">Move towards front</div>
+            <div id="move-backwards-button" class="toolbar-button requires-selection">Move backwards</div>
+            <div id="clear-selection-button" class="toolbar-button requires-selection">Select nothing</div>
+            <div id="flip-on-horizontal" class="toolbar-button requires-selection">Flip on horizontal</div>
+            <div id="delete-button" class="toolbar-button requires-selection">Delete selected!</div>
+            <div id="clear-all" class="toolbar-button">DELETE EVERYTHING</div>
             <div id="open-for-viewing-button" class="toolbar-button">Open for viewing</div>
         </div>
         <div id="cartoon-container">
