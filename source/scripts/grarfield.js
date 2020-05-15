@@ -54,23 +54,24 @@ var builder = function() {
     self.SetupPage = function() {
         var url = new URL(window.location.href);
         
-        // whether the editing tools show or not is based on the editorRequired query string param
-        var editorRequired = url.searchParams.get("editorRequired");
-        if(editorRequired == "true") {
-            self.showEditor = true;
-            self.OutputAvailableChunks(self.availableChunkContainer);
-            $("#chunk-selector").show();    // hide avaiable chunks
-            $("#selected-toolbar").show();  // hide editor tools
-            $("#editor-link").hide();       // show link to editor
-            self.UpdateToolBarButtonEnablednesssss(); // update the toolbar buttons to be enabled/disabled
-        }
-
         // based on query string params, do we need to load some objects into the 'comic'
         // objects will be passed in the persist query string param
         var persistance = url.searchParams.get("persist");
         if(persistance) {
             var jsonObject = JSON.parse(persistance);
             self.LoadPersistance(jsonObject);
+        }
+
+        // whether the editing tools show or not is based on the editorRequired query string param
+        // if no persistance (i.e. nothing to view) then show the editor
+        var editorRequired = url.searchParams.get("editorRequired");
+        if(!persistance || editorRequired == "true") {
+            self.showEditor = true;
+            self.OutputAvailableChunks(self.availableChunkContainer);
+            $("#chunk-selector").show();    // hide avaiable chunks
+            $("#selected-toolbar").show();  // hide editor tools
+            $("#editor-link").hide();       // show link to editor
+            self.UpdateToolBarButtonEnablednesssss(); // update the toolbar buttons to be enabled/disabled
         }
     }
 
